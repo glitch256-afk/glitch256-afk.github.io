@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>ClassiPC Update Website</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <!-- Background WebGL Shader Canvas -->
+        <canvas id="bg-canvas"></canvas>
+
+        <img src="logo.png" alt="ClassiPC Logo" style="width: 450px; height: 200px;">
+        <h1>ClassiPC Update Website</h1>
+        <h3>Running since 2026!</h3>
+        <p align="center">Server has been continuously up for:</p>
+        
+        <!-- 1. The Widget HTML Container -->
+        <div class="time-elapsed-container" style="font-family: inherit; line-height: 1.5; font-weight: bold; margin-bottom: 20px;">
+            <span id="site-counter">Calculating...</span>
+        </div>
+
+        <!-- 2. The Widget Script -->
+        <script>
+            (function() {
+                // Target date set to: September 30, 2026 at 10:00 PM
+                const startDate = new Date("2026-09-30T22:00:00");
+                const counterEl = document.getElementById("site-counter");
+
+                function updateCounter() {
+                    const now = new Date();
+                    let diff = now - startDate;
+
+                    if (diff < 0) {
+                        counterEl.innerHTML = "Date is in the future!";
+                        return;
+                    }
+
+                    let years = now.getFullYear() - startDate.getFullYear();
+                    let months = now.getMonth() - startDate.getMonth();
+                    let days = now.getDate() - startDate.getDate();
+                    let hours = now.getHours() - startDate.getHours();
+                    let minutes = now.getMinutes() - startDate.getMinutes();
+                    let seconds = now.getSeconds() - startDate.getSeconds();
+
+                    // Roll back seconds
+                    if (seconds < 0) { 
+                        minutes--; 
+                        seconds += 60; 
+                    }
+                    // Roll back minutes
+                    if (minutes < 0) { 
+                        hours--; 
+                        minutes += 60; 
+                    }
+                    // Roll back hours & handle calendar day borrows properly
+                    if (hours < 0) {
+                        days--; 
+                        hours += 24;
+                    }
+                    // Roll back days & handle calendar month borrows properly
+                    if (days < 0) {
+                        months--;
+                        const prevMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+                        days += prevMonth.getDate();
+                    }
+                    // Roll back months
+                    if (months < 0) { 
+                        years--; 
+                        months += 12; 
+                    }
+
+                    // Outputs clean, professional layout
+                    counterEl.innerHTML = `${years} Years, ${months} Months, ${days} Days, ${hours} Hours, ${minutes} Minutes, and ${seconds} Seconds`;
+                }
+
+                updateCounter();
+                setInterval(updateCounter, 1000);
+            })();
+        </script>
+        
+        <p align="center">ClassiPC is a ClassiCube server for my friends and I. Updates are posted here.</p>
+        <hr>
+        
+        <div class="article"> 
+            <h2>PATCH 1.02: The Deltarune Update</h2>
+            <p>October 17, 2026</p>
+            <p>This update has added multiple plugins that basically add a lot of Deltarune content all at once.</p>
+            <p>Stuff I have added:</p>
+            <ol>
+                <li>SnowGrave</li>
+                <li>IceShock</li>
+                <li>RudeBuster</li>
+                <li>Dark Fountains</li>
+            </ol>
+        </div>
+        <br>
+        <div class="article"> 
+            <h2>PATCH 1.??: Misc Updates</h2>
+            <p>October 1-17, 2026</p>
+            <p>This is the updates between 1.02 and 1.01.</p>
+            <p>Reason why i didn't really place a specific date on these updates was because I don't really remember.</p>
+        </div>
+        <br>
+        <div class="article"> 
+            <h2>PATCH 1.01: More Blocks!</h2>
+            <p>October 1, 2026</p>
+            <p>The first ever update. Added many more blocks for more building.</p>
+            <p>Blocks added:</p>
+            <ol>
+                <li>Concrete (and building shapes)</li>
+                <li>Drywall (and building shapes)</li>
+                <li>Stone and wood building shapes, etc.</li>
+                <li>Wool slabs</li>
+                <li>Stone & Sand bricks</li>
+                <li>Multidirectional blocks!</li>
+            </ol>
+        </div>
+
+        <!-- 3. WebGL Background Shader Script -->
+        <script>
+        (function() {
+            const canvas = document.getElementById('bg-canvas');
+            const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+            if (!gl) return;
+
+            function resizeCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                gl.viewport(0, 0, canvas.width, canvas.height);
+            }
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+
+            const vsSource = `
+                attribute vec2 position;
+                varying vec2 vUv;
+                void main() {
+                    vUv = position * 0.5 + 0.5;
+                    gl_Position = vec4(position, 0.0, 1.0);
+                }
+            `;
+
+            const fsSource = `
+                precision mediump float;
+                varying vec2 vUv;
+                uniform vec2 u_resolution;
+                uniform float u_time;
+                uniform sampler2D u_sampler0; // end_portal.png
+                uniform sampler2D u_sampler1; // end_sky.png
+
+                #define M_PI 3.1415926535897932384626433832795
+
+                vec3 getColor(int index) {
+                    if (index == 0) return vec3(0.022087, 0.098399, 0.110818);
+                    if (index == 1) return vec3(0.011892, 0.095924, 0.089485);
+                    if (index == 2) return vec3(0.027636, 0.101689, 0.100326);
+                    if (index == 3) return vec3(0.046564, 0.109883, 0.114838);
+                    if (index == 4) return vec3(0.064901, 0.117696, 0.097189);
+                    if (index == 5) return vec3(0.063761, 0.086895, 0.123646);
+                    if (index == 6) return vec3(0.084817, 0.111994, 0.166380);
+                    if (index == 7) return vec3(0.097489, 0.154120, 0.091064);
+                    if (index == 8) return vec3(0.106152, 0.131144, 0.195191);
+                    if (index == 9) return vec3(0.097721, 0.110188, 0.187229);
+                    if (index == 10) return vec3(0.133516, 0.138278, 0.148582);
+                    if (index == 11) return vec3(0.070006, 0.243332, 0.235792);
+                    if (index == 12) return vec3(0.196766, 0.142899, 0.214696);
+                    if (index == 13) return vec3(0.047281, 0.315338, 0.321970);
+                    if (index == 14) return vec3(0.204675, 0.390010, 0.302066);
+                    return vec3(0.080955, 0.314821, 0.661491);
+                }
+
+                mat2 mat2_rotate_z(float radians) {
+                    return mat2(
+                        cos(radians), -sin(radians),
+                        sin(radians), cos(radians)
+                    );
+                }
+
+                mat4 end_portal_layer(float layer) {
+                    mat4 translate = mat4(
+                        1.0, 0.0, 0.0, 0.0,
+                        0.0, 1.0, 0.0, 0.0,
+                        0.0, 0.0, 1.0, 0.0,
+                        17.0 / layer, (2.0 + layer / 1.5) * (u_time * 0.005), 0.0, 1.0
+                    );
+
+                    float deg = (layer * 4321.0 + layer * 9.0) * 2.0;
+                    float rad = deg * (M_PI / 180.0);
+                    mat2 rotate = mat2_rotate_z(rad);
+                    float scaleFactor = (4.5 - layer / 4.0) * 2.0;
+
+                    mat4 scaleAndRotate = mat4(
+                        rotate[0][0] * scaleFactor, rotate[0][1] * scaleFactor, 0.0, 0.0,
+                        rotate[1][0] * scaleFactor, rotate[1][1] * scaleFactor, 0.0, 0.0,
+                        0.0, 0.0, 1.0, 0.0,
+                        0.0, 0.0, 0.0, 1.0
+                    );
+
+                    mat4 scaleTranslate = mat4(
+                        0.5, 0.0, 0.0, 0.0,
+                        0.0, 0.5, 0.0, 0.0,
+                        0.0, 0.0, 1.0, 0.0,
+                        0.25, 0.25, 0.0, 1.0
+                    );
+
+                    return scaleTranslate * translate * scaleAndRotate;
+                }
+
+                void main() {
+                    vec2 uv = gl_FragCoord.xy / u_resolution.xy;
+                    vec3 color = texture2D(u_sampler1, uv).xyz * getColor(0);
+
+                    for (int i = 0; i < 15; i++) {
+                        float layer = float(i) + 1.0;
+                        mat4 layerMat = end_portal_layer(layer);
+                        vec4 texUV = layerMat * vec4(uv, 1.0, 1.0);
+                        vec3 texColor = texture2D(u_sampler0, texUV.xy).xyz;
+                        color += texColor * getColor(i);
+                    }
+
+                    gl_FragColor = vec4(color, 1.0);
+                }
+            `;
+
+            function createShader(gl, type, src) {
+                const shader = gl.createShader(type);
+                gl.shaderSource(shader, src);
+                gl.compileShader(shader);
+                if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+                    console.error(gl.getShaderInfoLog(shader));
+                    gl.deleteShader(shader);
+                    return null;
+                }
+                return shader;
+            }
+
+            const vs = createShader(gl, gl.VERTEX_SHADER, vsSource);
+            const fs = createShader(gl, gl.FRAGMENT_SHADER, fsSource);
+            const program = gl.createProgram();
+            gl.attachShader(program, vs);
+            gl.attachShader(program, fs);
+            gl.linkProgram(program);
+            gl.useProgram(program);
+
+            const positionBuffer = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+                -1, -1,  1, -1, -1,  1,
+                -1,  1,  1, -1,  1,  1
+            ]), gl.STATIC_DRAW);
+
+            const posLoc = gl.getAttribLocation(program, 'position');
+            gl.enableVertexAttribArray(posLoc);
+            gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
+
+            const uResLoc = gl.getUniformLocation(program, 'u_resolution');
+            const uTimeLoc = gl.getUniformLocation(program, 'u_time');
+            const uSamp0Loc = gl.getUniformLocation(program, 'u_sampler0');
+            const uSamp1Loc = gl.getUniformLocation(program, 'u_sampler1');
+
+            gl.uniform1i(uSamp0Loc, 0);
+            gl.uniform1i(uSamp1Loc, 1);
+
+            function loadTexture(url, unit, flipY = false) {
+                const tex = gl.createTexture();
+                gl.activeTexture(gl.TEXTURE0 + unit);
+                gl.bindTexture(gl.TEXTURE_2D, tex);
+
+                // Placeholder 1x1 pixel while downloading
+                gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([10, 20, 30, 255]));
+
+                const img = new Image();
+                img.crossOrigin = 'anonymous';
+                img.onload = () => {
+                    gl.activeTexture(gl.TEXTURE0 + unit);
+                    gl.bindTexture(gl.TEXTURE_2D, tex);
+                    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, flipY);
+                    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+                    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
+                    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
+                    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+                    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+                };
+                img.src = url;
+            }
+
+            loadTexture('https://assets.mcasset.cloud/1.20.2/assets/minecraft/textures/entity/end_portal.png', 0, false);
+            loadTexture('https://assets.mcasset.cloud/1.20.2/assets/minecraft/textures/environment/end_sky.png', 1, true);
+
+            const startTime = performance.now();
+            function render() {
+                const time = (performance.now() - startTime) / 1000.0;
+                gl.uniform2f(uResLoc, canvas.width, canvas.height);
+                gl.uniform1f(uTimeLoc, time);
+
+                gl.drawArrays(gl.TRIANGLES, 0, 6);
+                requestAnimationFrame(render);
+            }
+            requestAnimationFrame(render);
+        })();
+        </script>
+    </body>
+</html>

@@ -1,0 +1,138 @@
+/* --- Custom Local Font Definition --- */
+@font-face {
+    font-family: 'Mojang';
+    src: url('mojang.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* --- Vintage Early 2010s Minecraft Web Style --- */
+
+/* Import auxiliary fonts from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;700&family=VT323&display=swap');
+
+/* Fixed Canvas Shader Background (Renders behind all content) */
+#bg-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1; /* Placed behind page elements */
+    pointer-events: none; /* Mouse clicks and scrolls pass through */
+}
+
+body {
+    background-color: transparent; /* Made transparent to show shader canvas behind */
+    color: #DDDDDD; /* Light gray retro text */
+    font-family: 'Ubuntu', sans-serif;
+    margin: 0;
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+}
+
+/* Big Pixel Logo Title using your local mojang.ttf font */
+h1 {
+    font-family: 'Mojang', 'VT323', monospace;
+    font-size: 2.2rem;
+    color: #FFCC00; /* Yellow logo front */
+    text-shadow: 3px 3px 0px #000000; /* Crisp black shadow */
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+/* Server Status / Sub-Header */
+h3 {
+    font-family: 'VT323', monospace;
+    font-size: 1.5rem;
+    color: #AAAAAA;
+    text-shadow: 1px 1px 0px #000000;
+    margin-top: 0;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+/* Uptime Prompt Accent Text */
+p[align="center"] {
+    font-family: 'VT323', monospace;
+    font-size: 1.3rem;
+    color: #FFFFFF;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Thick Dark Stone Page Divider */
+hr {
+    border: none;
+    border-top: 4px solid #3A3A3A;
+    border-bottom: 4px solid #1A1A1A;
+    width: 100%;
+    max-width: 650px;
+    margin: 30px 0;
+}
+
+/* Time Counter Widget (Styled like an in-game Inventory Slot / Server Entry) */
+.time-elapsed-container {
+    background-color: #2D2D2D; /* Dark inventory slot background */
+    border: 4px solid #4A4A4A;
+    border-right-color: #151515;
+    border-bottom-color: #151515;
+    padding: 15px;
+    max-width: 600px;
+    width: 90%;
+    text-align: center;
+    box-shadow: inset 3px 3px 0px rgba(0,0,0,0.4);
+    box-sizing: border-box;
+}
+
+#site-counter {
+    font-family: 'VT323', monospace;
+    font-size: 1.8rem;
+    color: #55FF55; /* Bright XP / Lime Green active values */
+    text-shadow: 2px 2px 0px #000000;
+    letter-spacing: 1px;
+}
+
+/* Patch Notes Block (Styled like a clean block panel) */
+.article {
+    background-color: #333333; /* Smooth gray wool / stone panel */
+    border: 4px solid #1A1A1A;
+    border-top-color: #4A4A4A;
+    border-left-color: #4A4A4A;
+    padding: 20px;
+    max-width: 600px;
+    width: 90%;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.6);
+    box-sizing: border-box;
+}
+
+/* Update Post Title using your local mojang.ttf font */
+.article h2 {
+    font-family: 'Mojang', 'VT323', monospace;
+    font-size: 2rem;
+    color: #FFFF55; /* Classic chat yellow */
+    text-shadow: 2px 2px 0px #000000;
+    margin-top: 0;
+    margin-bottom: 5px;
+}
+
+/* Patch Metadata (Date Row) */
+.article p:first-of-type {
+    color: #FF5555; /* Redstone-active warning red */
+    font-size: 0.9rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+}
+
+/* Patch Text Description */
+.article p:not(:first-of-type) {
+    line-height: 1.5;
+    font-size: 1.05rem;
+    color: #E0E0E0;
+}
